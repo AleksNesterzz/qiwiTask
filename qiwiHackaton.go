@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"regexp"
 	"strings"
 	"time"
 
@@ -68,7 +69,11 @@ func main() {
 
 	code := *codeFlag
 	date := *dateFlag
-
+	r := regexp.MustCompile(`\d\d\d\d-\d\d-\d\d`)
+	if !r.MatchString(date) {
+		fmt.Print("Please write date format like YYYY-MM-DD")
+		return
+	}
 	date_parts := strings.Split(date, "-")
 	date = date_parts[2] + "/" + date_parts[1] + "/" + date_parts[0]
 
@@ -90,8 +95,9 @@ func main() {
 
 	for _, value := range vals.Valutes {
 		if value.CharCode == code {
-			fmt.Println(code, "(", value.Name, "):", value.Value/float64(value.Nominal))
+			fmt.Print(code, "(", value.Name, "):", value.Value/float64(value.Nominal))
 			return
 		}
 	}
+	fmt.Print("Unknown Charcode of valute, try again!")
 }
